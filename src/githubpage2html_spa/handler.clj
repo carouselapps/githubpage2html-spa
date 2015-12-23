@@ -1,9 +1,10 @@
 (ns githubpage2html-spa.handler
-  (:require [compojure.core :refer [defroutes routes wrap-routes]]
+  (:require [compojure.core :refer [defroutes routes wrap-routes ANY context]]
             [githubpage2html-spa.layout :refer [error-page]]
-            [githubpage2html-spa.routes.home :refer [home-routes]]
             [githubpage2html-spa.middleware :as middleware]
+            [githubpage2html-spa.routes.services :refer [service-routes]]
             [githubpage2html-spa.db.core :as db]
+            [githubpage2html-spa.layout :as layout]
             [compojure.route :as route]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
@@ -38,12 +39,12 @@
     (timbre/info component "stopped"))
   (timbre/info "shutdown complete!"))
 
-(def app-routes
-  (routes
-    (wrap-routes #'home-routes middleware/wrap-csrf)
-    (route/not-found
-      (:body
-        (error-page {:status 404
-                     :title "page not found"})))))
+(defroutes
+  app-routes
+  (var service-routes)
+  (context "/api" [] (route/not-found "Not Found"))
+  (wrap-routes (routes (ANY "*" [] (layout/render "app.html")))
+           middleware/wrap-csrf)
+  (route/not-found "Not Found"))
 
-(def app (middleware/wrap-base #'app-routes))
+(def app (middleware/wrap-app #'app-routes))
