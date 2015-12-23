@@ -1,0 +1,5 @@
+CREATE TABLE page
+(id SERIAL PRIMARY KEY,
+ url VARCHAR(300),
+ content VARCHAR(100000),
+ timestamp TIMESTAMP);

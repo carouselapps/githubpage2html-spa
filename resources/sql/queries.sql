@@ -1,21 +1,23 @@
--- name: create-user!
--- creates a new user record
-INSERT INTO users
-(id, first_name, last_name, email, pass)
-VALUES (:id, :first_name, :last_name, :email, :pass)
+-- name:save-page!
+-- creates a new page
+INSERT INTO page
+(url, content, timestamp)
+VALUES (:url, :content, :timestamp)
 
--- name: update-user!
--- update an existing user record
-UPDATE users
-SET first_name = :first_name, last_name = :last_name, email = :email
-WHERE id = :id
+-- name:update-page!
+-- updates an existing page
+UPDATE page
+SET content = :content, timestamp = :timestamp
+WHERE url = :url
 
--- name: get-user
--- retrieve a user given the id.
-SELECT * FROM users
-WHERE id = :id
+-- name:get-pages
+-- selects all available pages
+SELECT * FROM page ORDER BY timestamp DESC
 
--- name: delete-user!
--- delete a user given the id
-DELETE FROM users
-WHERE id = :id
+-- name:-get-page
+-- selects page with url :url
+SELECT * FROM page WHERE url = :url
+
+-- name:-delete-page!
+-- deletes page with id :id
+DELETE FROM page WHERE id = :id
